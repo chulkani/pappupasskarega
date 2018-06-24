@@ -1,847 +1,397 @@
-<!--CREDIT CARD -->
-<!-- content.html -->
-<div class="container">
-    <div id="formPart" class="row">
-        <div class="col-md-12">
-            <h1>Enter Details</h1>
-            <div class="row mb-2">
-                <div class="col-md-12">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1">
-                        <label class="form-check-label" for="exampleRadios1">Populate dropdown list</label>
-                    </div>
-                    <div class="alert alert-primary loader d-none" role="alert">
-                        Please wait while we fetch data...
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <select required class="form-control" id="list1" name="list1" disabled>
-                            <option value="">Please Select</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <select required class="form-control" id="list2" name="list2" disabled>
-                            <option value="">Please Select</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <select required class="form-control" id="list3" name="list3" disabled>
-                            <option value="">Please Select</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="name">Name</label>
-                        <div>
-                            <input type="text" class="form-control" name="name" id="name" placeholder="Please Enter your name" pattern="[A-Za-z ]{2,15}"
-                                title="Alphanumeric character min 2 max 15" maxlength="15" disabled />
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="name">Mobile</label>
-                        <div>
-                            <input type="tel" class="form-control" name="mobile" id="mobile" placeholder="Please Enter your ph number" pattern="[0-9]{10}"
-                                title="Phone Number" maxlength="10" disabled />
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <input type="button" disabled id="btnSubmit" value="Submit" class="btn btn-primary" />
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+app.html
+---------
+<div>
+	<header>
+		<div class="header">
+			<!-- logo on left hand side of header -->
+			<div class="logo">
+				<img src="https://s24.postimg.org/9rhutc6t1/header.png">
+			</div>
 
-    <div id="dragPart" class="row d-none">
-        <div class="col-md-12">
-            <h2>Select a Plan</h2>
-            <div class="row">
-                <div class="col-md-6 col-xs-12">
-                    <div id="div1" class="card bg-faded mb-2 p-3" ondrop="drop(event,1)" ondragover="dragOver(event)">
-                    </div>
-                </div>
-                <div class="col-md-6 col-xs-12">
-                    <div id="div2" class="card bg-faded mb-3 p-3" ondrop="drop(event,2)" ondragover="dragOver(event)">
-                    </div>
-                    <div class="form-group">
-                        <input type="button" id="btnSelectPlan" value="Select Plan" class="btn btn-primary" />
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+			<!-- logo on right hand side of header -->
+			<div class="right-logo">
+				<img src="https://s8.postimg.org/x0yamz6fp/rightlogo.png">
+			</div>
+		</div>
+	</header>
+
+	<!-- router outlet for component templates   -->
+	<router-outlet></router-outlet>
+
+	<!-- footer of page (Hint : Use footer and footer-text classes for footer.-->
+
+	<footer>
+		<div class="footer">
+			<div class="footer-text">
+				Copyright @Home stay Services Pvt. LTD. 2017 All Rights Reserved
+			</div>
+		</div>
+	</footer>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-            </div>
-            <div class="modal-body">
-                <p>Modal body text goes here.</p>
-                <p id="msg"></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary">OK</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
+home.component.html
+--------------------
+<div>
+	<!-- 1: Form should have city drop down, BHK size as radio buttons, Input fields for min and max budget and view properties button.
+		 2. Validation span for each filed with proper error message as per the given screen shots in the requirement.
+		 3. It should be show / hide based on the validation flag.
+		 4. Call onSubmit(myForm.value) while submit the form.-->
+
+	<form #myForm="ngForm">
+		<div class="top-container">
+			<span class="city-container">
+				<b> You are in 1 </b>
+				<select class="select-city" name="city" ngModel>
+					<option></option>
+					<option value="Bangalore" >Bangalore</option>
+					<option value="Delhi">Delhi</option>
+				</select>
+			</span>
+			<span class="button-container">
+					<button (click)="onSubmit(myForm)" class="btn btn-success btn-lg custom-button">
+							view properties
+					</button>
+			</span>
+		</div>
+		<span class="errorkey error-container" *ngIf="!errorKeys.isNoResultValid">
+			*No results Found for this query
+		</span>
+		<span class="errorkey" *ngIf="!errorKeys.isCityValid">
+				*Please select a city		
+		</span>
+		<div class="center-container">
+			<b> SELECT BHK </b> <br>
+			<input class="margin-0" ngModel name="home" type="radio" value="1BHK">
+			<label class="margin-2"> 1BHK </label>
+			<input class="radio-margin " ngModel name="home" type="radio" value="2BHK">
+			<label> 2 BHK  </label>
+		</div>
+		<span class="errorkey" *ngIf="!errorKeys.isBhkValid">		
+			*Please select BHK size
+		</span>
+
+		<div class="bottom-container">
+			<b> SELECT BUDGET(Approx.) </b> <br>
+			<label> MIN </label>
+			<input class="input-box" min="0" name="minBudget" ngModel type="number">
+			<label class="margin-left-50"> MAX </label>
+			<input class="input-box" max="10000000000" min="0" name="maxBudget" ngModel type="number">
+		</div>
+		<span class="errorkey" *ngIf="!errorKeys.isMinBudgetValid">
+			Please enter a valid Min budget
+		</span>
+
+		<span class="errorkey" *ngIf="!errorKeys.isMaxBudgetValid">
+			Please enter a valid Max budget
+		</span>
+		<span class="errorkey" *ngIf="!errorKeys.isMaxLessThanMinValid">
+			*Min budget can't be greater than the Max Budget
+		</span>
+	</form>
 </div>
 
-#btnSubmit {
-    margin-top: 32px;
-}
-#div1,
-#div2 {
-    min-height: 300px;
-}
 
-/* app.js */
-$(function () {
-    $("#appContainer").load('./content.html');
-
-    $("body").on("click", "#exampleRadios1", function () {
-        // CHANGE THE APIs AS PER REQUIREMENT
-        populateList('list1', 'https://api.myjson.com/bins/vg53m');
-        populateList('list2', 'https://api.myjson.com/bins/vg53m');
-        populateList('list3', 'https://api.myjson.com/bins/vg53m');
-    });
-
-    $("body").on("click", "#btnSubmit", function () {
-        ValidateForm();
-    });
-
-    $("body").on("click", "#btnSelectPlan", function () {
-        submitForm();
-    });
-});
-
-function populateList(id, url) {
-    $.ajax({
-        type: "GET",
-        crossdomain: true,
-        url: "https://api.myjson.com/bins/vg53m",
-        beforeSend: function () {
-            $('.loader').removeClass('d-none');
-        },
-        complete: function () {
-            $('.loader').addClass('d-none');
-        },
-        success: function (resp, status) {
-            $('#' + id).find('option').remove();
-            $('#' + id).append($('<option>', {
-                'value': '',
-                'text': 'Please Select'
-            }));
-            $.each(resp, function (i, item) {
-                $('#' + id).append($('<option>', {
-                    'value': item.value,
-                    'text': item.text
-                }));
-            });
-            $("#btnSubmit, select, input[type='text'], input[type='tel']").removeAttr("disabled");
-        },
-        error: function (resp, status) {
-
-        }
-    });
-}
-
-function ValidateForm() {
-    if ($('#list1').val() == '') {
-        alert('Please select value from list1');
-        return false;
-    }
-    if ($('#list2').val() == '') {
-        alert('Please select value from list2');
-        return false;
-    }
-    if ($('#list3').val() == '') {
-        alert('Please select value from list3');
-        return false;
-    }
-    var regex = /^[A-Za-z0-9\s]{2,15}$/;
-    if (!regex.test($('#name').val())) {
-        alert('Please Enter alphanumeric character for name min 2 max 15');
-        return false;
-    }
-
-    regex = /^[0-9]{10}$/;
-    if (!regex.test($('#mobile').val())) {
-        alert('Please Enter your ph number(10 digit)');
-        return false;
-    }
-
-    $('#formPart').addClass("d-none");
-    $('#dragPart').removeClass("d-none");
-
-    getPlanValues();
-}
-
-function getPlanValues() {
-    $('#div1').html('');
-    $('#div2').html('');
-    $.ajax({
-        type: "GET",
-        crossdomain: true,
-        url: "https://api.myjson.com/bins/19br7m",
-        success: function (resp, status) {
-            $.each(resp, function (i, item) {
-                var div = '<div class="drag card mb-1" style="width: 18rem;" draggable="true" ondragstart="dragStart(event)" data-name="' + item.name + '" id="' + i + '" data-value="' + item.value + '"><div class="card-body"><h5 class="card-title text-uppercase">' + item.name + '</h5><h6 class="card-subtitle mb-2 text-muted"> Rs. ' + item.value + '</h6></div></div>';
-                $('#div1').append(div);
-            });
-        },
-        error: function (resp, status) {
-
-        }
-    });
-}
-
-function drop(e, type) {
-    var div = e.dataTransfer.getData("text");
-    if (type == 2 && $('#div2').find('.drag').length >= 1) {
-        return false;
-    }
-    if (e.target.id !== 'div1' && e.target.id !== 'div2')
-        return false;
-    e.target.append(document.getElementById(div));
-}
-
-function dragOver(e) {
-    e.preventDefault();
-}
-
-function dragStart(e) {
-    e.dataTransfer.setData("text", e.target.id);
-}
-
-function submitForm() {
-    var data = {
-        "name": $('#name').val(),
-        "mobile": $('#mobile').val(),
-        "list1": $('#list1').val(),
-        "list2": $('#list2').val(),
-        "list3": $('#list3').val(),
-        "div_val": {
-            "name": $($('#div2').find('.drag')[0]).data("name"),
-            "value": $($('#div2').find('.drag')[0]).data("value")
-        }
-    };
-
-    $.ajax({
-        type: "GET", // POST
-        url: "https://api.myjson.com/bins/19br7m",
-        crossdomain: true,
-        contentType: "application/json",
-        data: JSON.stringify(data),
-        success: function (resp, status) {
-            // console.log(resp);
-            $('#myModal').find('#msg').html(JSON.stringify(data, null, 4));
-            $('#myModal').modal('show');
-        },
-        error: function (resp, status) {
-            // console.log(resp);
-            $('#myModal').find('#msg').html(JSON.stringify(data, null, 4));
-        }
-    });
-}
-
-
-/* server.js */
-/*
-const express = require('express')
-const app = express()
-
-app.use(express.static('public'));
-app.use(express.static('images'));
-
-app.get('/', (req, res) => res.send('Hello World!'))
-
-app.listen(3000, () => console.log('Example app listening on port 3000!'))
-*/
-
-
-
-<!--INSURANCE-->
-<div class="container-fluid insuranceContainer">
-    <!-- Here you need to design the new insurance and renew insurance containers using html, bootstrap and custom css classes. -->
-    <div class="container">
-        <div id="mainPart" class="row">
-            <div class="col-md-8 col-xs-12">
-                <div class="greyBG">
-                    <div class="row mb-2">
-                        <div class="col-md-12">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" />
-                                <label class="form-check-label" for="exampleRadios1">Get New Insurance</label>
-                            </div>
-                            <div class="alert alert-primary loader d-none" role="alert">
-                            Please wait while we fetch data...
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="formPart">
-                        <div class="row">
-                            <div class="col-md-4 col-xs-12">
-                                <div class="form-group">
-                                    <label for="ddCarType">Select a Car Type</label>
-                                    <select required class="form-control" id="ddCarType" name="ddCarType" disabled>
-                                        <option value="">Please Select</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-xs-12">
-                                <div class="form-group">
-                                    <label for="ddFuelType">Select a Fuel Type</label>
-                                    <select required class="form-control" id="ddFuelType" name="ddFuelType" disabled>
-                                        <option value="">Please Select</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-xs-12">
-                                <div class="form-group">
-                                    <label for="ddRegistrationState">Select a State</label>
-                                    <select required class="form-control" id="ddRegistrationState" name="ddRegistrationState" disabled>
-                                        <option value="">Please Select</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4 col-xs-12">
-                                <div class="form-group">
-                                    <label for="txtUserName">Enter Your Name</label>
-                                    <div>
-                                        <input type="text" class="form-control" name="txtUserName" id="txtUserName" placeholder="Please enter your name" pattern="[A-Za-z\s]{2,15}" title="Enter Name min 2 max 15" maxlength="15" disabled />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-xs-12">
-                                <div class="form-group">
-                                    <label for="txtPhoneNumber">Enter Your Mobile Number</label>
-                                    <div>
-                                        <input type="tel" class="form-control" name="txtPhoneNumber" id="txtPhoneNumber" placeholder="Please enter your phone number" pattern="[0-9]{10}" title="Phone Number" maxlength="10" disabled />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4 col-xs-12">
-                                <div class="form-group">
-                                    <input type="button" disabled id="btnSubmit" value="Get Quotes" class="btn btn-primary btn-block" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="dragPart" class="row d-none">
-                        <div class="col-md-12">
-                            <div class="row">
-                                <div class="col-md-4 col-xs-12">
-                                    <div id="div1" class="card bg-faded mb-2 p-1 whiteBG" ondrop="drop(event,1)" ondragover="dragOver(event)">
-                                        <p class="mb-1">Insurance Plan</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-xs-12">
-                                    <div id="div2" class="card bg-faded mb-3 p-1 whiteBG" ondrop="drop(event,2)" ondragover="dragOver(event)">
-                                        <p class="mb-1">To buy, drop your insurance policy here</p>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-xs-12">
-                                    <div class="form-group">
-                                        <input type="button" id="btnSelectPlan" value="Buy Insurance" class="btn btn-primary" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4 col-xs-12 right-col">
-                <div class="greyBG">
-                    <ul>
-                        <li><strong>Benefits</strong></li>
-                        <li>Easy</li>
-                        <li>Efficient</li>
-                        <li>Quick</li>
-                    </ul>
-                </div>
-            </div>
-        </div>        
-
-        <!-- Modal -->
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-        <div class="modal-content">
-        <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-        </button>
-        </div>
-        <div class="modal-body">
-        <div id="msg"></div>
-        </div>
-        </div>
-        </div>
-        </div>
-    </div>
+results.component.html
+-------------------------
+<div class="margin-bottom-70">	
+	<!-- iterate over the data set using looping statement -->
+	<div class="row" *ngFor="let homeObj of listHomes">
+		<div class="col-sm-6 col-sm-offset-2">
+			<div class="row margin-top-30">				
+				<div class="col-sm-6 img-container">
+					<!-- Bind the Image -->
+					<img [src]="homeObj.image" />
+				</div>
+				<div class="col-sm-4">					
+					<!-- Bind the Home details as per the UI -->
+					<strong>{{homeObj.home}} Apartment</strong>
+					<p>Build up Area <strong>{{homeObj.area}} Yards </strong></p>
+					<p>Avg. Price <strong>{{homeObj.averageprice}} Yards </strong></p>
+					<p>Rs. <strong>{{homeObj.totalprice}} </strong></p>
+					<p class="emiblock">Emi Starts @ Rs {{homeObj.emi}} </p>
+				</div>
+				<div class="col-sm-2">
+					<!-- Enquiry propery button -->
+					<button class="btn btn-success btn-lg custom-button" (click)="enqBtn()">
+						Enquire property
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
-/* This body will cover you the whole background image css */
-body{
-background: url(/images/car.jpg)  no-repeat center center fixed;
 
--webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-
-}
-
-/* This is the div for the Main Container Parent <div> */
-.insuranceContainer {
-    margin-top: 30px;
-    margin-left: 20px;
-}
-
-.headerDiv {
-    background-color: #adadad;
-    height: 60px;
-    padding-top: 10px;
-}
-
-.logo {
-    background: url("../images/sample_logo.png");
-    height: 50px;
-    width: 50px;
-    margin-left: 15px;
-
-}
-
-.footerDiv {
-    background-color: #adadad;
-    height: 40px;
-    padding-top: 10px;
-    text-align: center;
-    margin-top: 50px;
-}
-/* This is the class selector for InsuranceFormContainer that is div for the formconatiner  */
-.insuranceFormContainer {
-    background: #F0F0F0;
-    margin-top: 45px;
-   /*  padding-top:50px; */
-    padding-bottom:50px;
-    margin-right: 40px;
-    box-shadow: 0px 3px 3px #BBBBBB;
-}
-/* This is the class selector for benefitsconatiner that is our second box in HTML */
-.benefitsContainer {
-
-    background: #F0F0F0;
-    margin-top: 39px;
-    margin-right: 40px;
-    padding-top:45px;
-    box-shadow: 0px 3px 3px #BBBBBB;
-    text-align: center;
-    padding-bottom:50px;
-    
-}
-/* This is the class selector for all the div's in the Html i.e., only InsuranceRow */
-.insuranceRow {
-    height: 75px;
-    padding-top: 10px;
-}
-/* This is the class selector for the second Box in the html i.e.,only BenefitsRow */
-.benefitsRow {
-    height: 50px;
-    padding-top: 10px;
-    text-align: center;
-}
-
-/* This is the class selector for all the Input edit text elements  */
-.fieldInsurance {
-    width: 95%;
-    margin-left: 20px;
-}
-/* This is the class selector for renewInsurance edit text Field */
-.fieldRenew {
-    width: 150px;
-    height: 33px;
-}
-/* This is the class selector for div element for the renewInsurance field */
-.divRenew {
-    padding-top: 20px;
-    padding-bottom: 20px;
-}
-
-.detailsCol div label {
-    font-weight: 300;
-}
-/* This is the  selector for the div GetQuotes */
-.get-quotes{
-    background: #ddd;
-}
-/*This is the class selector for the box conatiner div where we drag and drop the elements  */
-.box-container {
-    height: 200px;
-}
-
-.box-item {
-    width: 100%;
-    z-index: 1000
-}
-/* This is the class selector for buying the insurance div */
-.colBuyIns {
-    padding-top: 90px;
-}
-/* This is the class selector for div quotes panel where we are doing drag and drop*/
-.quotesPanel {
-    padding-bottom: 50px;
-}
-/* Class selector for the div failuremessage div error scenario */
-.failureMessageDiv {
-    color: red;
-    font-weight: 700;
-}
-/* Class selector for the div Validation error for getting the errors in the redcolor statements */
-.validationError {
-    color: red;
-}
-
-.validationHighlight {
-    border-color: red;
-}
-
-/* The Modal (background) */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1050; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
-
-/* Modal Content */
-.modal-content {
-    background-color: #fefefe;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 60%;
-}
-
-/* The Close Button */
-.close {
-    color: #aaaaaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-#modelContent {
-    color: green;
-    font-weight: 700;
-}
-/* Class selector for making the proper adjustments between two boxes */
-.row{
-    margin-right:auto;
-    margin-left:5px;
-margin-bottom:20px;
-
-}
-
-.col-md-3{
-padding-top:.5em;
-padding-bottom:.5em;
-}
-
-.col-md-6 Tashan{
-display:block;
-}
-
-.Fan{
-position: fixed;
-    top: 0;
-    z-index: 10;
-}    
-    
-
-.d-none {
-    display: none;
-}
-.mb-1 {
-    margin-bottom: 1em
-}
-.mb-2 {
-    margin-bottom: 2em
-}
-.p-1 {
-    padding: 1em;
-}
-.p-3 {
-    padding: 3em;
-}
-.whiteBG {
-    background: #fff;
-}
-#mainPart {
-    margin-top: 3em
-}
-
-.greyBG {
-    background: #ebebeb;
-    padding: 20px;
-    border-radius: 5px;
-}
-
-#btnSubmit {
-  margin-top: 25px;
-}
-
-#div1,
-#div2 {
-  min-height: 300px;
-}
-
-.card {
-    border: 1px solid #2e2e2e;
-    border-radius: 5px;
-}
+//-----------------------------------------------------------------
 
 
-/* css Code for responsive table   */
-@media only screen and (max-width: 800px) {
-    
-    /* Force table to not be like tables anymore */
-    #no-more-tables table, 
-    #no-more-tables thead, 
-    #no-more-tables tbody, 
-    #no-more-tables th, 
-    #no-more-tables td, 
-    #no-more-tables tr { 
-        display: block; 
-    }
- 
-    /* Hide table headers (but not display: none;, for accessibility) */
-    #no-more-tables thead tr { 
-        position: absolute;
-        top: -9999px;
-        left: -9999px;
-    }
- 
-    #no-more-tables tr { border: 1px solid #ccc; }
- 
-    #no-more-tables td { 
-        /* Behave  like a "row" */
-        border: none;
-        border-bottom: 1px solid #eee; 
-        position: relative;
-        padding-left: 50%; 
-        white-space: normal;
-        text-align:left;
-    }
- 
-    #no-more-tables td:before { 
-        /* Now like a table header */
-        position: absolute;
-        /* Top/left values mimic padding */
-        top: 6px;
-        left: 6px;
-        width: 45%; 
-        padding-right: 10px; 
-        white-space: nowrap;
-        text-align:left;
-        font-weight: bold;
-    }
-    .right-col {
-        margin-top: 10px;
-    }
- 
-    /*
-    Label the data
-    */
-    #no-more-tables td:before { content: attr(data-title); }
+app.module.ts
+----------------
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { HttpModule } from '@angular/http';
+
+import { AppComponent } from './app.component';
+import { AppChild } from './app.child';
+import { HomeComponent } from './home/HomeComponent';
+import { ResultsComponent } from './result/ResultComponent';
+import { DataService } from './home/data-service';
+import { FormsModule } from '@angular/forms';
+
+
+const appRoutes: Routes = [
+  { path: 'home', component: HomeComponent },
+  { path: 'result', component: ResultsComponent },
+  { path: '', redirectTo: 'home', pathMatch: 'full' }
+];
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    AppChild,
+    HomeComponent,
+    ResultsComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    HttpModule,
+    RouterModule.forRoot(
+      appRoutes,
+      { enableTracing: true } // <-- debugging purposes only
+    )
+  ],
+  providers: [DataService],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
 
 
 
-    // Handle all the logics once the document is ready
-$(document).ready(function() {
-    // here you need to handle and implement all the logics for new insurance and renew insurance requirements.
-    // Try to leverange the power of jQuery to do the DOM manipulation to achieve the requirements.
-    // id "#insurance" in index.html should load the insurance template on DOM ready
-  $("#insurance").load('./views/insurance.html');
+HomeComponent.ts
+-----------------
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { FormsModule, FormGroup} from '@angular/forms';
+import { DataService } from './data-service';
 
-  $("body").on("click", "#exampleRadios1", function() {
-    populateList('ddCarType', 'http://localhost:3000/api/common/getCarModels');
-    populateList('ddFuelType', 'http://localhost:3000/api/common/getFuelType');
-    populateList('ddRegistrationState', 'http://localhost:3000/api/common/getRegStateCodes');
-  });
+@Component({
+	selector: 'my-home',
+	templateUrl: './home.component.html',
+	styleUrls: ['./home.component.css']
+})
 
-  $("body").on("click", "#btnSubmit", function() {
-    ValidateForm();
-  });
+export class HomeComponent {
+	// initiate dataservice and router
+	constructor(public dataSvc: DataService, public router: Router) {
+		console.log("in constructor...");
+	}
 
-  $("body").on("click", "#btnSelectPlan", function() {
-    submitForm();
-  });
-});
 
-function populateList(id, url) {
-  $.ajax({
-    type: "GET",
-    crossdomain: true,
-    url: url,
-    beforeSend: function() {
-      $('.loader').removeClass('d-none');
-    },
-    complete: function() {
-      $('.loader').addClass('d-none');
-    },
-    success: function(resp, status) {
-      $('#' + id).find('option').remove();
-      $('#' + id).append($('<option>', {
-        'value': '',
-        'text': 'Please Select'
-      }));
+	// Error keys object to show different kind of errors and info to user
+	errorKeys = {
+		isCityValid: true,
+		isBhkValid: true,
+		isMinBudgetValid: true,
+		isMaxBudgetValid: true,
+		isMaxLessThanMinValid: true,
+		isNoResultValid: true
+	}
 
-      $.each(resp.data, function(i, item) {
-        $('#' + id).append($('<option>', {
-          'value': i,
-          'text': item
-        }));
-      });
-      $("#btnSubmit, select, input[type='text'], input[type='tel']").removeAttr("disabled");
-    },
-    error: function(resp, status) {
+	// property to store/fetch the list of homes
+	homes;
 
-    }
-  });
+	// call this function when you click on view properties button
+	// call "this.validateForm" function from here and if it returns true make http request
+	// using function of dataService 
+	// if homes list if fetched successfully, store it in dataService and navigate to results page
+	onSubmit(form) {
+
+		//TODO1
+		//1. Validate form
+
+		//2. If form gets validated, make call data service functions to fetch data
+
+		//3. When request is successful, set the list of properties inside a property of �data service� and using router navigate to �results" route
+		// console.log(form);
+		let isValidForm = this.validateForm(form);
+
+		if (isValidForm) {
+			this.dataSvc.getHomes(form.value).subscribe(data => {
+				if (data.status == "success") {
+					this.dataSvc.setHomesData(data.data);
+					this.router.navigate(['/results']);
+				} else {
+					this.errorKeys.isNoResultValid = false;
+				}
+			});
+			this.router.navigate(['/result']);
+
+		}
+	}
+
+	// call this function from "onSubmit" function to validate if form is valid or not
+	// do all validations from here and show and hide the error messages in UI
+	// return false if form is invalid, return true if form is valid
+	validateForm(form) {
+		this.errorKeys = {
+			isCityValid: true,
+			isBhkValid: true,
+			isMinBudgetValid: true,
+			isMaxBudgetValid: true,
+			isMaxLessThanMinValid: true,
+			isNoResultValid: true
+		}
+
+		let isValidForm = true;
+		//TODO2
+		//1. do all validations and return false if there is any error
+		//2. set error key to true according to the invalid field
+
+		// else return true
+
+		// else{
+		// 	return true;
+		// }
+		let formObj = form.value;
+		// console.log(formObj);
+		if (!formObj.city) {
+			this.errorKeys.isCityValid = false;
+			isValidForm = false;
+		}
+
+		if (!formObj.home) {
+			this.errorKeys.isBhkValid = false;
+			isValidForm = false;
+		}
+		if (formObj.minBudget === '') {
+			this.errorKeys.isMinBudgetValid = false;
+			isValidForm = false;
+		}
+
+		if (!formObj.maxBudget) {
+			this.errorKeys.isMaxBudgetValid = false;
+			isValidForm = false;
+		} else if (formObj.maxBudget > 10000000000) {
+			this.errorKeys.isMaxBudgetValid = false;
+			isValidForm = true;
+		}
+
+		if (formObj.maxBudget > -1 && formObj.minBudget > -1 && (formObj.maxBudget < formObj.minBudget)) {
+			this.errorKeys.isMaxLessThanMinValid = false;
+			isValidForm = false;
+		}
+
+		if (isValidForm) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 }
 
-function ValidateForm() {
-  if ($('#ddCarType').val() == '') {
-    alert('Please select Car Type');
-    return false;
-  }
-  if ($('#ddFuelType').val() == '') {
-    alert('Please select Fuel Type');
-    return false;
-  }
-  if ($('#ddRegistrationState').val() == '') {
-    alert('Please select Registration State');
-    return false;
-  }
-  var regex = /^[A-Za-z\s]{2,15}$/;
-  if (!regex.test($('#txtUserName').val())) {
-    alert('Please Enter a valid name with minimum 2 and maximum 15 characters.');
-    return false;
+
+ResultComponent.ts
+-----------------------
+import { Component, OnInit } from '@angular/core';
+import { DataService } from '../home/data-service';
+@Component({
+  selector: 'my-results',
+  templateUrl: './results.component.html',
+  styleUrls: ['./results.component.css']
+})
+export class ResultsComponent implements OnInit {
+
+  constructor(public dataSvc: DataService) {
+
   }
 
-  regex = /^[0-9]{10}$/;
-  if (!regex.test($('#txtPhoneNumber').val())) {
-    alert('Please Enter a valid mobile number(10 digit)');
-    return false;
+  // property to hold the homes list
+  listHomes = [];
+
+  // on init, fetch the list of homes which you set from homes component
+  //and store in a "listHomes" property  which you can iterate to show in UI
+  ngOnInit() {
+
+    // TODO7
+    // Fetch the stored results from data service and store in local property "listHomes"
+    this.listHomes = this.dataSvc.getHomesData();
+    console.log(this.listHomes);
+
   }
 
-  $('#formPart').addClass("d-none");
-  $('#dragPart').removeClass("d-none");
-
-  getPlanValues();
-}
-
-function getPlanValues() {
-  $.ajax({
-    type: "GET",
-    crossdomain: true,
-    url: "http://localhost:3000/api/getQuotes",
-    success: function(resp, status) {
-      $.each(resp.data, function(i, item) {
-        var div = '<div class="drag card mb-1 p-1" draggable="true" ondragstart="dragStart(event)" data-name="' + item.name + '" id="' + i + '" data-price="' + item.price + '"><div class="card-body"><h5 class="card-title text-uppercase">' + item.name + '</h5><h6 class="card-subtitle mb-2 text-muted"> Rs. ' + item.price + '</h6></div></div>';
-        $('#div1').append(div);
-      });
-    },
-    error: function(resp, status) {
-
-    }
-  });
-}
-
-function drop(e, type) {
-  var div = e.dataTransfer.getData("text");
-  if (type == 2 && $('#div2').find('.drag').length >= 1) {
-    return false;
+  enqBtn() {
+    alert("Your enquiry has been sent and our team will get back to you shortly.");
   }
-  if (e.target.id !== 'div1' && e.target.id !== 'div2')
-    return false;
-  e.target.append(document.getElementById(div));
+
 }
 
-function dragOver(e) {
-  e.preventDefault();
+
+
+data-service.ts
+--------------------
+import { Injectable, Inject } from '@angular/core';
+import { Http, URLSearchParams, Jsonp, Headers } from '@angular/http';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/toPromise';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
+import 'rxjs/Rx';
+
+@Injectable()
+export class DataService {
+
+
+  // inject http service and create object
+  constructor(private http: Http) {
+
+  }
+
+  //property to hold homes list
+  homes;
+
+  // store data set into a homes property 
+  setHomesData(homes) {
+    // TODO3
+    //Set homes data to local Homes property
+    this.homes = homes;
+  }
+
+  // return data set from the homes property
+  getHomesData() {
+    // TODO4 
+    //return homes
+    return this.homes;
+  }
+
+
+  // make service request to fetch homes list along with URL parameters
+  // home, city, minBudget and maxBudget.
+  //If there is an error in request, use Observable for error. The response should be return in json format.
+  getHomes(form) {
+    const body = JSON.stringify(form);
+    const headers = new Headers({ 'Content-Type': 'application/json' });
+    let params = new URLSearchParams();
+    //TODO5 set search params for home, city, minBudget, maxBudget
+    // Example: params.set( 'home', form.home );
+
+    // TODO6
+    //Make http request to URL: http://localhost:3000/homes
+    // example URL : http://localhost:3000/homes?home=2BHK&city=Bangalore&minBudget=1&maxBudget=100000000
+
+    params.set('city', form.city);
+    params.set('home', form.home);
+    params.set('minBudget', form.minBudget);
+    params.set('maxBudget', form.maxBudget);
+
+    // console.log(params);
+
+    let URL = "http://localhost:3000/homes?home=" + form.home + "&city=" + form.city + "&minBudget=" + form.minBudget + "&maxBudget=" + form.maxBudget;
+
+    return this.http.get(URL).map(res => res.json());
+
+  }
+
 }
-
-function dragStart(e) {
-  e.dataTransfer.setData("text", e.target.id);
-}
-
-function submitForm() {
-  var data = {
-    "userName": $('#txtUserName').val(),
-    "phoneNumber": $('#txtPhoneNumber').val(),
-    "carType": $('#ddCarType').val(),
-    "fuelType": $('#ddFuelType').val(),
-    "registrationState": $('#ddRegistrationState').val(),
-    "plan": {
-      "name": $($('#div2').find('.drag')[0]).data("name"),
-      "price": $($('#div2').find('.drag')[0]).data("price")
-    }
-  };
-
-  $.ajax({
-    type: "POST",
-    url: "http://localhost:3000/api/addInsurance",
-    crossdomain: true,
-    contentType: "application/json",
-    data: JSON.stringify(data),
-    success: function(resp, status) {
-      $('#myModal').find('#msg').html("<p class='text-success'><strong>You have successfully bought the insurance. Your policy number is " + resp.data.policyNumber + ".</strong></p>");
-      $('#myModal').modal('show');
-    },
-    error: function(resp, status) {
-      
-    }
-  });
-}
-
