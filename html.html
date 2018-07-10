@@ -1,0 +1,397 @@
+app.html
+---------
+<div>
+	<header>
+		<div class="header">
+			<!-- logo on left hand side of header -->
+			<div class="logo">
+				<img src="https://s24.postimg.org/9rhutc6t1/header.png">
+			</div>
+
+			<!-- logo on right hand side of header -->
+			<div class="right-logo">
+				<img src="https://s8.postimg.org/x0yamz6fp/rightlogo.png">
+			</div>
+		</div>
+	</header>
+
+	<!-- router outlet for component templates   -->
+	<router-outlet></router-outlet>
+
+	<!-- footer of page (Hint : Use footer and footer-text classes for footer.-->
+
+	<footer>
+		<div class="footer">
+			<div class="footer-text">
+				Copyright @Home stay Services Pvt. LTD. 2017 All Rights Reserved
+			</div>
+		</div>
+	</footer>
+</div>
+
+home.component.html
+--------------------
+<div>
+	<!-- 1: Form should have city drop down, BHK size as radio buttons, Input fields for min and max budget and view properties button.
+		 2. Validation span for each filed with proper error message as per the given screen shots in the requirement.
+		 3. It should be show / hide based on the validation flag.
+		 4. Call onSubmit(myForm.value) while submit the form.-->
+
+	<form #myForm="ngForm">
+		<div class="top-container">
+			<span class="city-container">
+				<b> You are in 1 </b>
+				<select class="select-city" name="city" ngModel>
+					<option></option>
+					<option value="Bangalore" >Bangalore</option>
+					<option value="Delhi">Delhi</option>
+				</select>
+			</span>
+			<span class="button-container">
+					<button (click)="onSubmit(myForm)" class="btn btn-success btn-lg custom-button">
+							view properties
+					</button>
+			</span>
+		</div>
+		<span class="errorkey error-container" *ngIf="!errorKeys.isNoResultValid">
+			*No results Found for this query
+		</span>
+		<span class="errorkey" *ngIf="!errorKeys.isCityValid">
+				*Please select a city		
+		</span>
+		<div class="center-container">
+			<b> SELECT BHK </b> <br>
+			<input class="margin-0" ngModel name="home" type="radio" value="1BHK">
+			<label class="margin-2"> 1BHK </label>
+			<input class="radio-margin " ngModel name="home" type="radio" value="2BHK">
+			<label> 2 BHK  </label>
+		</div>
+		<span class="errorkey" *ngIf="!errorKeys.isBhkValid">		
+			*Please select BHK size
+		</span>
+
+		<div class="bottom-container">
+			<b> SELECT BUDGET(Approx.) </b> <br>
+			<label> MIN </label>
+			<input class="input-box" min="0" name="minBudget" ngModel type="number">
+			<label class="margin-left-50"> MAX </label>
+			<input class="input-box" max="10000000000" min="0" name="maxBudget" ngModel type="number">
+		</div>
+		<span class="errorkey" *ngIf="!errorKeys.isMinBudgetValid">
+			Please enter a valid Min budget
+		</span>
+
+		<span class="errorkey" *ngIf="!errorKeys.isMaxBudgetValid">
+			Please enter a valid Max budget
+		</span>
+		<span class="errorkey" *ngIf="!errorKeys.isMaxLessThanMinValid">
+			*Min budget can't be greater than the Max Budget
+		</span>
+	</form>
+</div>
+
+
+results.component.html
+-------------------------
+<div class="margin-bottom-70">	
+	<!-- iterate over the data set using looping statement -->
+	<div class="row" *ngFor="let homeObj of listHomes">
+		<div class="col-sm-6 col-sm-offset-2">
+			<div class="row margin-top-30">				
+				<div class="col-sm-6 img-container">
+					<!-- Bind the Image -->
+					<img [src]="homeObj.image" />
+				</div>
+				<div class="col-sm-4">					
+					<!-- Bind the Home details as per the UI -->
+					<strong>{{homeObj.home}} Apartment</strong>
+					<p>Build up Area <strong>{{homeObj.area}} Yards </strong></p>
+					<p>Avg. Price <strong>{{homeObj.averageprice}} Yards </strong></p>
+					<p>Rs. <strong>{{homeObj.totalprice}} </strong></p>
+					<p class="emiblock">Emi Starts @ Rs {{homeObj.emi}} </p>
+				</div>
+				<div class="col-sm-2">
+					<!-- Enquiry propery button -->
+					<button class="btn btn-success btn-lg custom-button" (click)="enqBtn()">
+						Enquire property
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+//-----------------------------------------------------------------
+
+
+app.module.ts
+----------------
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { HttpModule } from '@angular/http';
+
+import { AppComponent } from './app.component';
+import { AppChild } from './app.child';
+import { HomeComponent } from './home/HomeComponent';
+import { ResultsComponent } from './result/ResultComponent';
+import { DataService } from './home/data-service';
+import { FormsModule } from '@angular/forms';
+
+
+const appRoutes: Routes = [
+  { path: 'home', component: HomeComponent },
+  { path: 'result', component: ResultsComponent },
+  { path: '', redirectTo: 'home', pathMatch: 'full' }
+];
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    AppChild,
+    HomeComponent,
+    ResultsComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    HttpModule,
+    RouterModule.forRoot(
+      appRoutes,
+      { enableTracing: true } // <-- debugging purposes only
+    )
+  ],
+  providers: [DataService],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+
+
+HomeComponent.ts
+-----------------
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { FormsModule, FormGroup} from '@angular/forms';
+import { DataService } from './data-service';
+
+@Component({
+	selector: 'my-home',
+	templateUrl: './home.component.html',
+	styleUrls: ['./home.component.css']
+})
+
+export class HomeComponent {
+	// initiate dataservice and router
+	constructor(public dataSvc: DataService, public router: Router) {
+		console.log("in constructor...");
+	}
+
+
+	// Error keys object to show different kind of errors and info to user
+	errorKeys = {
+		isCityValid: true,
+		isBhkValid: true,
+		isMinBudgetValid: true,
+		isMaxBudgetValid: true,
+		isMaxLessThanMinValid: true,
+		isNoResultValid: true
+	}
+
+	// property to store/fetch the list of homes
+	homes;
+
+	// call this function when you click on view properties button
+	// call "this.validateForm" function from here and if it returns true make http request
+	// using function of dataService 
+	// if homes list if fetched successfully, store it in dataService and navigate to results page
+	onSubmit(form) {
+
+		//TODO1
+		//1. Validate form
+
+		//2. If form gets validated, make call data service functions to fetch data
+
+		//3. When request is successful, set the list of properties inside a property of �data service� and using router navigate to �results" route
+		// console.log(form);
+		let isValidForm = this.validateForm(form);
+
+		if (isValidForm) {
+			this.dataSvc.getHomes(form.value).subscribe(data => {
+				if (data.status == "success") {
+					this.dataSvc.setHomesData(data.data);
+					this.router.navigate(['/results']);
+				} else {
+					this.errorKeys.isNoResultValid = false;
+				}
+			});
+			this.router.navigate(['/result']);
+
+		}
+	}
+
+	// call this function from "onSubmit" function to validate if form is valid or not
+	// do all validations from here and show and hide the error messages in UI
+	// return false if form is invalid, return true if form is valid
+	validateForm(form) {
+		this.errorKeys = {
+			isCityValid: true,
+			isBhkValid: true,
+			isMinBudgetValid: true,
+			isMaxBudgetValid: true,
+			isMaxLessThanMinValid: true,
+			isNoResultValid: true
+		}
+
+		let isValidForm = true;
+		//TODO2
+		//1. do all validations and return false if there is any error
+		//2. set error key to true according to the invalid field
+
+		// else return true
+
+		// else{
+		// 	return true;
+		// }
+		let formObj = form.value;
+		// console.log(formObj);
+		if (!formObj.city) {
+			this.errorKeys.isCityValid = false;
+			isValidForm = false;
+		}
+
+		if (!formObj.home) {
+			this.errorKeys.isBhkValid = false;
+			isValidForm = false;
+		}
+		if (formObj.minBudget === '') {
+			this.errorKeys.isMinBudgetValid = false;
+			isValidForm = false;
+		}
+
+		if (!formObj.maxBudget) {
+			this.errorKeys.isMaxBudgetValid = false;
+			isValidForm = false;
+		} else if (formObj.maxBudget > 10000000000) {
+			this.errorKeys.isMaxBudgetValid = false;
+			isValidForm = true;
+		}
+
+		if (formObj.maxBudget > -1 && formObj.minBudget > -1 && (formObj.maxBudget < formObj.minBudget)) {
+			this.errorKeys.isMaxLessThanMinValid = false;
+			isValidForm = false;
+		}
+
+		if (isValidForm) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+}
+
+
+ResultComponent.ts
+-----------------------
+import { Component, OnInit } from '@angular/core';
+import { DataService } from '../home/data-service';
+@Component({
+  selector: 'my-results',
+  templateUrl: './results.component.html',
+  styleUrls: ['./results.component.css']
+})
+export class ResultsComponent implements OnInit {
+
+  constructor(public dataSvc: DataService) {
+
+  }
+
+  // property to hold the homes list
+  listHomes = [];
+
+  // on init, fetch the list of homes which you set from homes component
+  //and store in a "listHomes" property  which you can iterate to show in UI
+  ngOnInit() {
+
+    // TODO7
+    // Fetch the stored results from data service and store in local property "listHomes"
+    this.listHomes = this.dataSvc.getHomesData();
+    console.log(this.listHomes);
+
+  }
+
+  enqBtn() {
+    alert("Your enquiry has been sent and our team will get back to you shortly.");
+  }
+
+}
+
+
+
+data-service.ts
+--------------------
+import { Injectable, Inject } from '@angular/core';
+import { Http, URLSearchParams, Jsonp, Headers } from '@angular/http';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/toPromise';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/catch';
+import 'rxjs/Rx';
+
+@Injectable()
+export class DataService {
+
+
+  // inject http service and create object
+  constructor(private http: Http) {
+
+  }
+
+  //property to hold homes list
+  homes;
+
+  // store data set into a homes property 
+  setHomesData(homes) {
+    // TODO3
+    //Set homes data to local Homes property
+    this.homes = homes;
+  }
+
+  // return data set from the homes property
+  getHomesData() {
+    // TODO4 
+    //return homes
+    return this.homes;
+  }
+
+
+  // make service request to fetch homes list along with URL parameters
+  // home, city, minBudget and maxBudget.
+  //If there is an error in request, use Observable for error. The response should be return in json format.
+  getHomes(form) {
+    const body = JSON.stringify(form);
+    const headers = new Headers({ 'Content-Type': 'application/json' });
+    let params = new URLSearchParams();
+    //TODO5 set search params for home, city, minBudget, maxBudget
+    // Example: params.set( 'home', form.home );
+
+    // TODO6
+    //Make http request to URL: http://localhost:3000/homes
+    // example URL : http://localhost:3000/homes?home=2BHK&city=Bangalore&minBudget=1&maxBudget=100000000
+
+    params.set('city', form.city);
+    params.set('home', form.home);
+    params.set('minBudget', form.minBudget);
+    params.set('maxBudget', form.maxBudget);
+
+    // console.log(params);
+
+    let URL = "http://localhost:3000/homes?home=" + form.home + "&city=" + form.city + "&minBudget=" + form.minBudget + "&maxBudget=" + form.maxBudget;
+
+    return this.http.get(URL).map(res => res.json());
+
+  }
+
+}
